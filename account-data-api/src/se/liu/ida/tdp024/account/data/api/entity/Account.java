@@ -4,4 +4,14 @@ import java.io.Serializable;
 
 public interface Account extends Serializable {
     
+    int getId();
+    
+    String getPersonKey();
+    String getAccountType();
+    String getBankKey();
+    
+    Boolean debitAccount(int amount);
+    Boolean creditAccount(int amount);
+    
+    int getHoldings();
 }
