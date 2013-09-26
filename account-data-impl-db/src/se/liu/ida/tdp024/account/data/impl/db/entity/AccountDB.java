@@ -1,10 +1,12 @@
 package se.liu.ida.tdp024.account.data.impl.db.entity;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 
+@Entity
 public class AccountDB implements Account {
 
     @Id
@@ -15,6 +17,9 @@ public class AccountDB implements Account {
     private String personKey;
     private String bankKey;
     private int holdings;
+    
+    public AccountDB() {
+    }
     
     public AccountDB(String accountType, String name, String bank) {
         this.accountType = accountType;

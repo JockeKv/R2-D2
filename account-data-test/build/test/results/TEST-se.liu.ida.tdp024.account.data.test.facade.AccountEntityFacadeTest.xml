@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="1" failures="0" hostname="PC4-5" name="se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest" tests="1" time="5.441" timestamp="2013-09-26T11:36:43">
+<testsuite errors="0" failures="0" hostname="PC4-5" name="se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest" tests="1" time="5.713" timestamp="2013-09-26T13:59:36">
   <properties>
     <property name="libs.jsp-compiler.javadoc" value="" />
     <property name="netbeans.autoupdate.country" value="SE" />
@@ -72,7 +72,7 @@
     <property name="copylibs.rebase" value="true" />
     <property name="libs.spring-webmvc3.0.maven-pom" value="" />
     <property name="libs.swing-layout.maven-pom" value="" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,Z:\Desktop\GitHub\R2-D2\account-data-test\build\test\results\TEST-se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest.xml crashfile=Z:\Desktop\GitHub\R2-D2\account-data-test\build\junitvmwatcher221131648536935179.properties propsfile=Z:\Desktop\GitHub\R2-D2\account-data-test\build\junit5649528659774762695.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,Z:\Desktop\GitHub\R2-D2\account-data-test\build\test\results\TEST-se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest.xml crashfile=Z:\Desktop\GitHub\R2-D2\account-data-test\build\junitvmwatcher6491037615551567567.properties propsfile=Z:\Desktop\GitHub\R2-D2\account-data-test\build\junit8882283092739514238.properties" />
     <property name="build.classes.dir" value="build/classes" />
     <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
     <property name="libs.Java-EE-GlassFish-v3.wsjwsdp" value="" />
@@ -126,7 +126,7 @@
     <property name="javac.debug" value="true" />
     <property name="javadoc.splitindex" value="true" />
     <property name="file.separator" value="\" />
-    <property name="javac.includesfile.binary" value="Z:\Desktop\GitHub\R2-D2\account-data-test\null990937404" />
+    <property name="javac.includesfile.binary" value="Z:\Desktop\GitHub\R2-D2\account-data-test\null2144035332" />
     <property name="libs.restlib_gfv3ee6.classpath" value="C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jackson-core-asl.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jackson-jaxrs.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jackson-mapper-asl.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jersey-client.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jersey-core.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jersey-gf-server.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jersey-json.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jersey-multipart.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\jettison.jar;C:\Program Files (x86)\glassfish-3.1.1\glassfish\modules\mimepull.jar" />
     <property name="libs.ActiveSync.classpath" value="C:\Program Files (x86)\NetBeans 7.0.1\mobility\modules\ext\nbactivesync-5.0.jar" />
     <property name="libs.junit_4.maven-pom" value="" />
@@ -470,15 +470,22 @@
     <property name="platform.active" value="default_platform" />
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
   </properties>
-  <testcase classname="se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest" name="testCreate" time="5.322">
-    <error type="java.lang.NullPointerException">java.lang.NullPointerException
-	at se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest.testCreate(AccountEntityFacadeTest.java:34)
-</error>
-  </testcase>
-  <system-out><![CDATA[[EL Info]: 2013-09-26 13:36:46.695--ServerSession(17444196)--EclipseLink, version: Eclipse Persistence Services - 2.3.0.v20110604-r9504
-[EL Info]: 2013-09-26 13:36:48.302--ServerSession(17444196)--file:/Z:/Desktop/GitHub/R2-D2/account-data-impl-db/dist/account-data-impl-db.jar_account-dataPU login successful
-[EL Warning]: 2013-09-26 13:36:48.347--The collection of metamodel types is empty. Model classes may not have been found during entity search for Java SE and some Java EE container managed persistence units.  Please verify that your entity classes are referenced in persistence.xml using either <class> elements or a global <exclude-unlisted-classes>false</exclude-unlisted-classes> element
-[EL Info]: 2013-09-26 13:36:48.435--ServerSession(17444196)--file:/Z:/Desktop/GitHub/R2-D2/account-data-impl-db/dist/account-data-impl-db.jar_account-dataPU logout successful
+  <testcase classname="se.liu.ida.tdp024.account.data.test.facade.AccountEntityFacadeTest" name="testCreate" time="5.609" />
+  <system-out><![CDATA[[EL Info]: 2013-09-26 15:59:39.469--ServerSession(3753023)--EclipseLink, version: Eclipse Persistence Services - 2.3.0.v20110604-r9504
+[EL Info]: 2013-09-26 15:59:41.268--ServerSession(3753023)--file:/Z:/Desktop/GitHub/R2-D2/account-data-impl-db/dist/account-data-impl-db.jar_account-dataPU login successful
+[EL Warning]: 2013-09-26 15:59:41.758--ServerSession(3753023)--Exception [EclipseLink-4002] (Eclipse Persistence Services - 2.3.0.v20110604-r9504): org.eclipse.persistence.exceptions.DatabaseException
+Internal Exception: java.sql.SQLSyntaxErrorException: 'DROP TABLE' cannot be performed on 'ACCOUNTDB' because it does not exist.
+Error Code: 30000
+Call: DROP TABLE ACCOUNTDB
+Query: DataModifyQuery(sql="DROP TABLE ACCOUNTDB")
+[EL Warning]: 2013-09-26 15:59:41.869--ServerSession(3753023)--Exception [EclipseLink-4002] (Eclipse Persistence Services - 2.3.0.v20110604-r9504): org.eclipse.persistence.exceptions.DatabaseException
+Internal Exception: java.sql.SQLSyntaxErrorException: 'DROP TABLE' cannot be performed on 'TRANSACTIONDB' because it does not exist.
+Error Code: 30000
+Call: DROP TABLE TRANSACTIONDB
+Query: DataModifyQuery(sql="DROP TABLE TRANSACTIONDB")
+Holdings on Joakim Kvarnkvist CHECK account = 0
+And after transaction Joakim Kvarnkvist CHECK account contains = 100
+[EL Info]: 2013-09-26 15:59:42.359--ServerSession(3753023)--file:/Z:/Desktop/GitHub/R2-D2/account-data-impl-db/dist/account-data-impl-db.jar_account-dataPU logout successful
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
