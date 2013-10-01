@@ -11,6 +11,6 @@ public interface Account extends Serializable {
     String getBankKey();
     
     int getHoldings();
-    int changeHoldings(int amount);
+    boolean changeHoldings(int amount);
     
 }

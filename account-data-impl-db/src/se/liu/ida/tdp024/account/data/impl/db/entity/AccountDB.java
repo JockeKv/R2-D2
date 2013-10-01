@@ -49,11 +49,12 @@ public class AccountDB implements Account {
     }
 
     @Override
-    public int changeHoldings(int amount) {
+    public boolean changeHoldings(int amount) {
+        if((this.holdings + amount) < 0)
+            return false;
         this.holdings += amount;
-        return this.holdings;
+        return true;
     }
-
 
     @Override
     public int getHoldings() {

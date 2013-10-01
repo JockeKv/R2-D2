@@ -75,7 +75,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         try {
 
-            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE personKey="+name);
+            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE t.personKey='"+name+"'");
             return query.getResultList();
 
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         try {
 
-            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE account="+account);
+            Query query = em.createQuery("SELECT t FROM TransactionDB t WHERE t.account='"+account+"'");
             return query.getResultList();
 
         } catch (Exception e) {
