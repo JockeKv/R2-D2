@@ -21,6 +21,9 @@ public class AccountDB implements Account {
     public AccountDB() {
     }
     
+    public AccountDB() {
+    }
+    
     public AccountDB(String accountType, String name, String bank) {
         this.accountType = accountType;
         this.personKey = name;
