@@ -17,9 +17,10 @@ public class AccountDB implements Account {
     private String personKey;
     private String bankKey;
     private int holdings;
-    
+
     public AccountDB() {
     }
+    
     
     public AccountDB(String accountType, String name, String bank) {
         this.accountType = accountType;

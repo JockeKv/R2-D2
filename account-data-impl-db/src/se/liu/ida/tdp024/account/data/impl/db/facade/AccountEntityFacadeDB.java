@@ -106,7 +106,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             return em.find(AccountDB.class, id);
 
         } catch (Exception e) {
-
+e.printStackTrace();
             return null;
 
         } finally {

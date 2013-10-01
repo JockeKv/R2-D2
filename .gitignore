@@ -1,0 +1,8 @@
+/account-data-test/build/
+/account-util/build/
+/account-data-test/dist/
+
+*.class
+*.jar
+*.properties
+*.xml

@@ -35,8 +35,13 @@ public class AccountEntityFacadeTest {
         
         account = accountEntityFacade.find(id);
         
+        System.out.println("Account Type: "+ account.getAccountType());
         Assert.assertEquals(accountType, account.getAccountType());
+        
+        System.out.println("Person Key: "+ account.getPersonKey());
         Assert.assertEquals(personKey, account.getPersonKey());
+        
+        System.out.println("Bank Key: "+ account.getBankKey());
         Assert.assertEquals(bankKey, account.getBankKey());
         
         System.out.print("Holdings on " + account.getPersonKey() + " " + account.getAccountType() + " account = ");

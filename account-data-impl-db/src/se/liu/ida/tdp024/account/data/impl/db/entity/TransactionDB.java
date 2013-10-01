@@ -1,14 +1,12 @@
 package se.liu.ida.tdp024.account.data.impl.db.entity;
 
 import java.util.Date;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 
-@Entity
 public class TransactionDB implements Transaction {
 
     @Id
@@ -21,9 +19,6 @@ public class TransactionDB implements Transaction {
     private Account account;
     private int amount;
     
-    public TransactionDB() {
-    }
-    
     public TransactionDB(String transactionType, int amount) {
         this.transactionType = transactionType;
         this.amount = amount;
@@ -31,6 +26,8 @@ public class TransactionDB implements Transaction {
         this.status = false;
         this.account = null;
     }
+    
+    public TransactionDB() {}
     
     @Override
     public int getId() {

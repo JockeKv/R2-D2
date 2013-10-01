@@ -1,5 +1,6 @@
 package se.liu.ida.tdp024.account.logic.impl.facade;
 
+import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
 import se.liu.ida.tdp024.account.util.http.HTTPHelper;
@@ -7,12 +8,25 @@ import se.liu.ida.tdp024.account.util.http.HTTPHelperImpl;
 
 public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
-   /* private AccountEntityFacade accountEntityFacade;
+    private AccountEntityFacade accountEntityFacade;
     
     public AccountLogicFacadeImpl(AccountEntityFacade accountEntityFacade) {
         this.accountEntityFacade = accountEntityFacade;
     }
-    * */
+    
+    
+    public String createAccount(String type, String name, String bank) {
+        String nameKey = findPersonByName(name);
+        String bankKey = findBankByName(bank);
+        
+        int id = accountEntityFacade.create("CHECK", nameKey, bankKey);
+        
+        Account account = accountEntityFacade.find(id);
+        
+        String res = account.getAccountType()+","+account.getPersonKey()+","+account.getBankKey();
+        
+        return res;
+    }
     
     
     HTTPHelper helper = new HTTPHelperImpl();
