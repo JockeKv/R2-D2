@@ -21,18 +21,19 @@ public class AccountEntityFacadeTest {
         storageFacade.emptyStorage();
     }
     
+    String accountType = "CHECK";
+    String personKey = "Joakim Kvarnkvist";
+    String bankKey = "No Savings Bank";
+    int amount = 100;
+    String type = "CREDIT";
+    Account account;
+    
     @Test
     public void testCreate() {
         
-        String accountType = "CHECK";
-        String personKey = "Joakim Kvarnkvist";
-        String bankKey = "No Savings Bank";
-        int amount = 100;
-        String type = "CREDIT";
-        
         int id = accountEntityFacade.create(accountType, personKey, bankKey);
         
-        Account account = accountEntityFacade.find(id);
+        account = accountEntityFacade.find(id);
         
         Assert.assertEquals(accountType, account.getAccountType());
         Assert.assertEquals(personKey, account.getPersonKey());
@@ -40,6 +41,13 @@ public class AccountEntityFacadeTest {
         
         System.out.print("Holdings on " + account.getPersonKey() + " " + account.getAccountType() + " account = ");
         System.out.println(account.getHoldings());
+        
+    }
+    
+    @Test
+    public void testTransaction() {
+        
+        int id = accountEntityFacade.create(accountType, personKey, bankKey);
         
         Transaction transaction = accountEntityFacade.createTransaction(type, id, amount);
         
@@ -50,6 +58,11 @@ public class AccountEntityFacadeTest {
         
         Assert.assertEquals(amount, transaction.getAmount());
         Assert.assertEquals(type, transaction.getType());
+    }
+    
+    @Test
+    public void testfindAccount() {
         
+
     }
 }
