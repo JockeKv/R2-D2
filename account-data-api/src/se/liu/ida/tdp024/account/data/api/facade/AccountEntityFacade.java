@@ -6,12 +6,14 @@ import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 
 public interface AccountEntityFacade {
     
-    int create(String accountType, String name, String bank);
+    int createAccount(String accountType, String name, String bank);
     
-    Transaction createTransaction(String type, int id, int amount);
+    boolean insertTransaction(Transaction transaction);
     
-    List<Account> findAccount(String name);
-    List<Transaction> listTransactions(int id);
+    boolean modifyAccount(int id, int amount);
     
-    Account find(int id);
+    List<Account> listAccounts(String name);
+    List<Transaction> listTransactions(Account account);
+    
+    Account findAccount(int id);
 }

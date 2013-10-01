@@ -4,7 +4,6 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Test;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
-import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.api.util.StorageFacade;
 import se.liu.ida.tdp024.account.data.impl.db.facade.AccountEntityFacadeDB;
@@ -31,9 +30,9 @@ public class AccountEntityFacadeTest {
     @Test
     public void testCreate() {
         
-        int id = accountEntityFacade.create(accountType, personKey, bankKey);
+        int id = accountEntityFacade.createAccount(accountType, personKey, bankKey);
         
-        account = accountEntityFacade.find(id);
+        account = accountEntityFacade.findAccount(id);
         
         System.out.println("Account Type: "+ account.getAccountType());
         Assert.assertEquals(accountType, account.getAccountType());
@@ -47,27 +46,5 @@ public class AccountEntityFacadeTest {
         System.out.print("Holdings on " + account.getPersonKey() + " " + account.getAccountType() + " account = ");
         System.out.println(account.getHoldings());
         
-    }
-    
-    @Test
-    public void testTransaction() {
-        
-        int id = accountEntityFacade.create(accountType, personKey, bankKey);
-        
-        Transaction transaction = accountEntityFacade.createTransaction(type, id, amount);
-        
-        account = accountEntityFacade.find(id);
-        
-        System.out.print("And after transaction " + account.getPersonKey() + " " + account.getAccountType() + " account contains = ");
-        System.out.println(account.getHoldings());
-        
-        Assert.assertEquals(amount, transaction.getAmount());
-        Assert.assertEquals(type, transaction.getType());
-    }
-    
-    @Test
-    public void testfindAccount() {
-        
-
     }
 }

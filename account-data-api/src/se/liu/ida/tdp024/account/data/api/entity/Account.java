@@ -10,8 +10,7 @@ public interface Account extends Serializable {
     String getAccountType();
     String getBankKey();
     
-    Boolean debitAccount(int amount);
-    Boolean creditAccount(int amount);
-    
     int getHoldings();
+    int changeHoldings(int amount);
+    
 }

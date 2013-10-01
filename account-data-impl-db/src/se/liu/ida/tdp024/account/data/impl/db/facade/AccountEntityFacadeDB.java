@@ -3,17 +3,17 @@ package se.liu.ida.tdp024.account.data.impl.db.facade;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.impl.db.entity.AccountDB;
-import se.liu.ida.tdp024.account.data.impl.db.entity.TransactionDB;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 
 public class AccountEntityFacadeDB implements AccountEntityFacade {
 
     @Override
-    public int create(String accountType, String name, String bank) {
+    public int createAccount(String accountType, String name, String bank) {
         EntityManager em = EMF.getEntityManager();
 
         try {
@@ -42,40 +42,22 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public Transaction createTransaction(String type, int id, int amount) {
+    public boolean insertTransaction(Transaction transaction) {
         EntityManager em = EMF.getEntityManager();
-
-        Transaction transaction = new TransactionDB(type, amount);
         
         try {
 
-            em.getTransaction().begin();
-
-            Account account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
+            em.getTransaction().begin();           
             
-            transaction.setAccount(account);
-            
-            Boolean status = false;
-            
-            if(type.equals("DEBIT"))
-                status = account.debitAccount(amount);
-            else if(type.equals("CREDIT"))
-                status = account.creditAccount(amount);
-            else
-                return transaction;
-            
-            transaction.setStatus(status);
-            
-            em.merge(account);
+            em.persist(transaction);
 
             em.getTransaction().commit();
             
-            return transaction;
+            return true;
 
         } catch (Exception e) {
 
-            transaction.setStatus(false);
-            return transaction;
+            return false;
 
         } finally {
 
@@ -88,30 +70,85 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public List<Account> findAccount(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public List<Transaction> listTransactions(int id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Account find(int id) {
+    public List<Account> listAccounts(String name) {
         EntityManager em = EMF.getEntityManager();
 
         try {
 
+            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE personKey="+name);
+            return query.getResultList();
+
+        } catch (Exception e) {
+
+            return null;
+
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Transaction> listTransactions(Account account) {
+        EntityManager em = EMF.getEntityManager();
+
+        try {
+
+            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE account="+account);
+            return query.getResultList();
+
+        } catch (Exception e) {
+
+            return null;
+
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Account findAccount(int id) {
+        EntityManager em = EMF.getEntityManager();
+
+        try {
             return em.find(AccountDB.class, id);
 
         } catch (Exception e) {
-e.printStackTrace();
             return null;
 
         } finally {
             em.close();
         }
 
+    }
+
+    @Override
+    public boolean modifyAccount(int id, int amount) {
+        EntityManager em = EMF.getEntityManager();
+        
+        try {
+            em.getTransaction().begin();
+
+            Account account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
+            
+            account.changeHoldings(amount);
+
+            em.merge(account);
+
+            em.getTransaction().commit();
+            
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+
+        } finally {
+
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+
+            em.close();
+        }
     }
 }
