@@ -105,7 +105,9 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
 
     @Override
     public String listTransactions(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Account account = accountEntityFacade.findAccount(id);
+        List<Transaction> list = accountEntityFacade.listTransactions(account);
+        return json.toJson(list);
     }
     
     
