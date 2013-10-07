@@ -50,8 +50,9 @@ public class AccountDB implements Account {
 
     @Override
     public boolean changeHoldings(int amount) {
-        if((this.holdings + amount) < 0)
+        if((this.holdings + amount) < 0) {
             return false;
+        }
         this.holdings += amount;
         return true;
     }

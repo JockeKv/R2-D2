@@ -22,23 +22,27 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
    // *** DATA INTERACTION FUNCTIONS ***
     
-    AccountJsonSerializer json = new AccountJsonSerializerImpl();
+    private AccountJsonSerializer json = new AccountJsonSerializerImpl();
     
     @Override
     public String createAccount(String type, String name, String bank) {            
-            if(!type.equals("CHECK") || !type.equals("SAVINGS"))
+            if(!type.equals("CHECK") || !type.equals("SAVINGS")) {
                 return "Invalid account-type";
+            }
         
             String nameKey = findPersonByName(name);
-            if(nameKey.equals("null"))
+            if(nameKey.equals("null")) {
                 return "Name does not exist";
+            }
             
             String bankKey = findBankByName(bank);
-            if(bankKey.equals("null"))
+            if(bankKey.equals("null")) {
                 return "Bank does not exist";
+            }
             
-            if(accountEntityFacade.createAccount(type, nameKey, bankKey) < 0)
+            if(accountEntityFacade.createAccount(type, nameKey, bankKey) < 0) {
                 return "Account creation failed";
+            }
             
             
             return "Account successfully created!";
@@ -46,33 +50,35 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
 
     @Override
     public String creditAccount(int id, int amount) {
-        if(findAccount(id) == null)
+        if(findAccount(id) == null) {
             return "No such account";
-        String timeStamp = new Date().toString();
+        }
         Transaction transaction = new TransactionDB("CREDIT", amount);
         if(amount > 0) {
             Boolean status = accountEntityFacade.modifyAccount(id, amount);
             transaction.setStatus(status);
         }
-        if(accountEntityFacade.insertTransaction(transaction))
+        if(accountEntityFacade.insertTransaction(transaction)) {
             return transaction.getStatus().toString();
+        }
         
         return "FAILED :(";
     }
 
     @Override
     public String debitAccount(int id, int amount) {
-        if(findAccount(id) == null)
+        if(findAccount(id) == null) {
             return "No such account";
-        String timeStamp = new Date().toString();
+        }
         Transaction transaction = new TransactionDB("DEBIT", amount);
         if(amount > 0) {
             int mod = amount - (amount*2);
             Boolean status = accountEntityFacade.modifyAccount(id, mod);
             transaction.setStatus(status);
         }
-        if(accountEntityFacade.insertTransaction(transaction))
+        if(accountEntityFacade.insertTransaction(transaction)) {
             return transaction.getStatus().toString();
+        }
         
         return "FAILED :(";
     }
@@ -90,8 +96,9 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     @Override
     public String listAccounts(String name) {
         String nameKey = findPersonByName(name);
-        if(nameKey.equals("null"))
+        if(nameKey.equals("null")) {
             return "Name does not exist";
+        }
         List<Account> list = accountEntityFacade.listAccounts(nameKey);
         return json.toJson(list);
     }
@@ -104,7 +111,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
     // *** LOGIC FUNCTIONS ***
 
-    HTTPHelper helper = new HTTPHelperImpl();
+    private HTTPHelper helper = new HTTPHelperImpl();
     
     // PERSON
     

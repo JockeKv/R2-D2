@@ -108,6 +108,7 @@ public class AccountEntityFacadeTest {
         accountEntityFacade.insertTransaction(transaction);
         
         List<Transaction> list = accountEntityFacade.listTransactions(account);
+        System.out.println("List size: " + list.size());
         Assert.assertEquals(5, list.size());
     }
 }
