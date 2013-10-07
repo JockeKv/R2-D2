@@ -93,11 +93,10 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         try {
 
-            Query query = em.createQuery("SELECT t FROM TransactionDB t WHERE t.account='"+account+"'");
+            Query query = em.createQuery("SELECT t FROM TransactionDB t WHERE t.accountId="+account.getId());
             return query.getResultList();
 
         } catch (Exception e) {
-
             return null;
 
         } finally {

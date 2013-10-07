@@ -95,20 +95,22 @@ public class AccountEntityFacadeTest {
     @Test
     public void testListTransactions() {
         
-        // NOT DONE
         int id = accountEntityFacade.createAccount(accountType1, personKey, bankKey);
+        int id2 = accountEntityFacade.createAccount(accountType1, "Arne", bankKey);
         account = accountEntityFacade.findAccount(id);
+        Account account2 = accountEntityFacade.findAccount(id2);
         
         transaction = new TransactionDB("DEBIT", debitamount);
         transaction2 = new TransactionDB("CREDIT", creditamount);
+        transaction.setAccount(account);
+        transaction2.setAccount(account);
         accountEntityFacade.insertTransaction(transaction);
         accountEntityFacade.insertTransaction(transaction2);
-        accountEntityFacade.insertTransaction(transaction);
-        accountEntityFacade.insertTransaction(transaction2);
-        accountEntityFacade.insertTransaction(transaction);
         
         List<Transaction> list = accountEntityFacade.listTransactions(account);
-        System.out.println("List size: " + list.size());
-        Assert.assertEquals(5, list.size());
+        Assert.assertEquals(2, list.size());
+        
+        List<Transaction> list2 = accountEntityFacade.listTransactions(account2);
+        Assert.assertEquals(0, list2.size());
     }
 }

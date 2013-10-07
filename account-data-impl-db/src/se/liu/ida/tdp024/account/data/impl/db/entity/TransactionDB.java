@@ -19,6 +19,7 @@ public class TransactionDB implements Transaction {
     private String created;
     private Boolean status;
     private Account account;
+    private int accountId;
     private int amount;
     
     public TransactionDB(String transactionType, int amount) {
@@ -27,6 +28,7 @@ public class TransactionDB implements Transaction {
         this.created = new Date().toString();
         this.status = false;
         this.account = null;
+        this.accountId = -1;
     }
     
     public TransactionDB() {}
@@ -70,6 +72,7 @@ public class TransactionDB implements Transaction {
     @Override
     public Boolean setAccount(Account account) {
         this.account = account;
+        this.accountId = account.getId();
         return this.account == account;
     }
     
