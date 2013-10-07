@@ -75,7 +75,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         try {
 
-            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE t.personKey='"+name+"'");
+            Query query = em.createQuery("SELECT t FROM AccountDB t WHERE t.personKey=:name");
+            query.setParameter("name", name);
             return query.getResultList();
 
         } catch (Exception e) {
@@ -93,7 +94,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         try {
 
-            Query query = em.createQuery("SELECT t FROM TransactionDB t WHERE t.accountId="+account.getId());
+            Query query = em.createQuery("SELECT t FROM TransactionDB t WHERE t.account=:account");
+            query.setParameter("account", account);
             return query.getResultList();
 
         } catch (Exception e) {
@@ -129,13 +131,13 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
             Account account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
             
-            account.changeHoldings(amount);
+            Boolean status = account.changeHoldings(amount);
 
             em.merge(account);
 
             em.getTransaction().commit();
             
-            return true;
+            return status;
 
         } catch (Exception e) {
 

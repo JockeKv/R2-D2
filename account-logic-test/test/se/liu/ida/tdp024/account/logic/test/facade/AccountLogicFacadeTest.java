@@ -27,5 +27,14 @@ public class AccountLogicFacadeTest {
     public void testCreate() {
         String res = accountLogicFacade.createAccount("CHECK", "Marcus Bendtsen", "SWEDBANK");
         System.out.println(res);
+        
+        res = accountLogicFacade.creditAccount(1, 100);
+        System.out.println(res);
+        
+        res = accountLogicFacade.listTransactions(1);
+        System.out.println(res);
+
+
+        
     }
 }

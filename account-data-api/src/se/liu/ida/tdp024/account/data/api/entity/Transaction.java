@@ -8,12 +8,12 @@ public interface Transaction extends Serializable {
     
     String getType();
     int getAmount();
-    String getDate();
-    Boolean getStatus();
+    String getCreated();
+    String getStatus();
     
-    Boolean setStatus(Boolean status);
+    Boolean setStatus(String status);
     Boolean setAccount(Account account);
     
-    Account getAccount(int id);
+    Account getAccount();
     
 }

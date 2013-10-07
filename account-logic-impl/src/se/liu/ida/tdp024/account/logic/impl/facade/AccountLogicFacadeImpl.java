@@ -1,6 +1,5 @@
 package se.liu.ida.tdp024.account.logic.impl.facade;
 
-import java.util.Date;
 import java.util.List;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
@@ -25,62 +24,72 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     private AccountJsonSerializer json = new AccountJsonSerializerImpl();
     
     @Override
-    public String createAccount(String type, String name, String bank) {            
-            if(!type.equals("CHECK") || !type.equals("SAVINGS")) {
-                return "Invalid account-type";
+    public String createAccount(String type, String name, String bank) {
+            if(type == null) {
+                return "FAILED";
+            }
+            
+            if(!type.equals("CHECK") && !type.equals("SAVINGS")) {
+                return "FAILED";
             }
         
             String nameKey = findPersonByName(name);
             if(nameKey.equals("null")) {
-                return "Name does not exist";
+                return "FAILED";
             }
             
             String bankKey = findBankByName(bank);
             if(bankKey.equals("null")) {
-                return "Bank does not exist";
+                return "FAILED";
             }
             
             if(accountEntityFacade.createAccount(type, nameKey, bankKey) < 0) {
-                return "Account creation failed";
+                return "FAILED";
             }
             
             
-            return "Account successfully created!";
+            return "OK";
     }
 
     @Override
     public String creditAccount(int id, int amount) {
         if(findAccount(id) == null) {
-            return "No such account";
+            return "FAILED";
         }
         Transaction transaction = new TransactionDB("CREDIT", amount);
         if(amount > 0) {
             Boolean status = accountEntityFacade.modifyAccount(id, amount);
-            transaction.setStatus(status);
+            if(status) {
+                transaction.setStatus("OK");
+            }
         }
+        transaction.setAccount(accountEntityFacade.findAccount(id));
         if(accountEntityFacade.insertTransaction(transaction)) {
-            return transaction.getStatus().toString();
+            return "OK";
         }
         
-        return "FAILED :(";
+        return "FAILED";
     }
 
     @Override
     public String debitAccount(int id, int amount) {
         if(findAccount(id) == null) {
-            return "No such account";
+            return "FAILED";
         }
         Transaction transaction = new TransactionDB("DEBIT", amount);
         if(amount > 0) {
             int mod = amount - (amount*2);
             Boolean status = accountEntityFacade.modifyAccount(id, mod);
-            transaction.setStatus(status);
+            if(status) {
+                transaction.setStatus("OK");
+            }
         }
+        transaction.setAccount(accountEntityFacade.findAccount(id));
         if(accountEntityFacade.insertTransaction(transaction)) {
-            return transaction.getStatus().toString();
+            return transaction.getStatus();
         }
         
-        return "FAILED :(";
+        return "FAILED";
     }
 
     @Override
@@ -97,7 +106,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     public String listAccounts(String name) {
         String nameKey = findPersonByName(name);
         if(nameKey.equals("null")) {
-            return "Name does not exist";
+            return "[]";
         }
         List<Account> list = accountEntityFacade.listAccounts(nameKey);
         return json.toJson(list);
@@ -115,12 +124,17 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
 
     private HTTPHelper helper = new HTTPHelperImpl();
     
+    private static class Dummy {
+        public Dummy() {}
+        public String name;
+        public String key;
+    }
+    
     // PERSON
     
     @Override
     public String listPersons() {
         String res = helper.get("http://enterprise-systems.appspot.com/person/list");
-        
         return res;
     }
 
@@ -134,8 +148,9 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     @Override
     public String findPersonByName(String name) {
         String res = helper.get("http://enterprise-systems.appspot.com/person/find.name", "name", name);
-        
-        return res;
+        Dummy dummy = json.fromJson(res, Dummy.class);
+       
+        return dummy.key;
     }
 
     // BANK
@@ -158,7 +173,9 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     public String findBankByName(String name) {
         String res = helper.get("http://enterprise-systems.appspot.com/bank/find.name", "name", name);
         
-        return res;
+       Dummy dummy = json.fromJson(res, Dummy.class);
+       
+       return dummy.key;
     }
 
     
