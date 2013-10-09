@@ -18,7 +18,7 @@ public interface AccountEntityFacade {
             EntityInputParameterException,
             EntityServiceConfigurationException;
     
-    boolean modifyAccount(int id, int amount)
+    boolean modifyAccount(int id, int amount, String mod)
             throws
             EntityInputParameterException,
             EntityServiceConfigurationException,
@@ -26,17 +26,14 @@ public interface AccountEntityFacade {
     
     List<Account> listAccounts(String name)
             throws
-            EntityInputParameterException,
             EntityServiceConfigurationException;
     
     List<Transaction> listTransactions(Account account)
             throws
-            EntityInputParameterException,
             EntityServiceConfigurationException;
     
     Account findAccount(int id)
             throws
-            EntityInputParameterException,
             EntityServiceConfigurationException,
             EntityNotFoundException;
 }

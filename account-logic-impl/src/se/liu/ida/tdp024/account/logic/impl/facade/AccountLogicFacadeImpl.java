@@ -1,8 +1,13 @@
 package se.liu.ida.tdp024.account.logic.impl.facade;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
+import se.liu.ida.tdp024.account.data.api.exception.EntityInputParameterException;
+import se.liu.ida.tdp024.account.data.api.exception.EntityNotFoundException;
+import se.liu.ida.tdp024.account.data.api.exception.EntityServiceConfigurationException;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.impl.db.entity.TransactionDB;
 import se.liu.ida.tdp024.account.logic.api.facade.AccountLogicFacade;
@@ -23,14 +28,21 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
     private AccountJsonSerializer json = new AccountJsonSerializerImpl();
     
+    
+    
+    
     @Override
-    public String createAccount(String type, String name, String bank) {
+    public String createAccount(String type, String name, String bank)
+        throws
+            EntityInputParameterException,
+            EntityServiceConfigurationException {
+        
             if(type == null) {
-                return "FAILED";
+                throw new EntityInputParameterException("Accounttype can not be null.");
             }
             
             if(!type.equals("CHECK") && !type.equals("SAVINGS")) {
-                return "FAILED";
+                throw new EntityInputParameterException("Accounttype must be 'CHECK' or 'SAVINGS'");
             }
         
             String nameKey = findPersonByName(name);
@@ -43,79 +55,129 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
                 return "FAILED";
             }
             
-            if(accountEntityFacade.createAccount(type, nameKey, bankKey) < 0) {
-                return "FAILED";
+            try {
+                accountEntityFacade.createAccount(type, nameKey, bankKey);
+            } 
+            catch (EntityServiceConfigurationException e) {
+                throw new EntityServiceConfigurationException("Failed to create account.");
             }
-            
-            
+                        
             return "OK";
     }
 
     @Override
-    public String creditAccount(int id, int amount) {
-        if(findAccount(id) == null) {
-            return "FAILED";
+    public String creditAccount(int id, int amount)
+        throws
+            EntityNotFoundException,
+            EntityServiceConfigurationException,
+            EntityInputParameterException,
+            Exception {
+        
+        try {
+            findAccount(id);
         }
+        catch(EntityNotFoundException e) {
+            throw e;
+        }
+        
         Transaction transaction = new TransactionDB("CREDIT", amount);
-        if(amount > 0) {
-            Boolean status = accountEntityFacade.modifyAccount(id, amount);
-            if(status) {
-                transaction.setStatus("OK");
-            }
+        
+        try {
+            accountEntityFacade.modifyAccount(id, amount, "C");
+            transaction.setAccount(accountEntityFacade.findAccount(id));
+            
         }
-        transaction.setAccount(accountEntityFacade.findAccount(id));
-        if(accountEntityFacade.insertTransaction(transaction)) {
-            return "OK";
+        catch(Exception e) {
+                transaction.setStatus("FAILED");
+                accountEntityFacade.insertTransaction(transaction);
+                throw e;
         }
         
-        return "FAILED";
+        transaction.setStatus("OK");
+        accountEntityFacade.insertTransaction(transaction);
+        
+        return "OK";
     }
 
     @Override
-    public String debitAccount(int id, int amount) {
-        if(findAccount(id) == null) {
-            return "FAILED";
+    public String debitAccount(int id, int amount)
+        throws
+            EntityNotFoundException,
+            EntityServiceConfigurationException,
+            EntityInputParameterException,
+            Exception {
+        
+        try {
+            findAccount(id);
         }
+        catch(EntityNotFoundException e) {
+            throw e;
+        }
+        
         Transaction transaction = new TransactionDB("DEBIT", amount);
-        if(amount > 0) {
-            int mod = amount - (amount*2);
-            Boolean status = accountEntityFacade.modifyAccount(id, mod);
-            if(status) {
-                transaction.setStatus("OK");
-            }
+        
+        try {
+            accountEntityFacade.modifyAccount(id, amount, "D");
+            transaction.setAccount(accountEntityFacade.findAccount(id));
+            
         }
-        transaction.setAccount(accountEntityFacade.findAccount(id));
-        if(accountEntityFacade.insertTransaction(transaction)) {
-            return transaction.getStatus();
+        catch(Exception e) {
+                transaction.setStatus("FAILED");
+                accountEntityFacade.insertTransaction(transaction);
+                throw e;
         }
         
-        return "FAILED";
+        transaction.setStatus("OK");
+        accountEntityFacade.insertTransaction(transaction);
+        
+        return "OK";
+    }
+
+
+    @Override
+    public Account findAccount(int id)
+        throws
+            EntityNotFoundException,
+            Exception{
+        
+        try {
+            return accountEntityFacade.findAccount(id);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
-    public Boolean createTransaction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Account findAccount(int id) {
-        return accountEntityFacade.findAccount(id);
-    }
-
-    @Override
-    public String listAccounts(String name) {
+    public String listAccounts(String name) 
+        throws
+            EntityServiceConfigurationException {
+        
+        List<Account> list;
         String nameKey = findPersonByName(name);
         if(nameKey.equals("null")) {
             return "[]";
         }
-        List<Account> list = accountEntityFacade.listAccounts(nameKey);
+        try {
+            list = accountEntityFacade.listAccounts(nameKey);
+        }
+        catch(EntityServiceConfigurationException e) {
+            throw e;
+        }
         return json.toJson(list);
     }
 
     @Override
-    public String listTransactions(int id) {
-        Account account = accountEntityFacade.findAccount(id);
-        List<Transaction> list = accountEntityFacade.listTransactions(account);
+    public String listTransactions(int id)
+        throws
+            Exception {
+        List<Transaction> list;
+        try {
+            Account account = accountEntityFacade.findAccount(id);
+            list = accountEntityFacade.listTransactions(account);
+        }
+        catch(EntityServiceConfigurationException e) {
+            throw e;
+        }
         return json.toJson(list);
     }
     
@@ -130,21 +192,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         public String key;
     }
     
-    // PERSON
-    
-    @Override
-    public String listPersons() {
-        String res = helper.get("http://enterprise-systems.appspot.com/person/list");
-        return res;
-    }
-
-    @Override
-    public String findPersonByKey(String key) {
-        String res = helper.get("http://enterprise-systems.appspot.com/person/find.key", "key", key);
-        
-        return res;
-    }
-
+ 
     @Override
     public String findPersonByName(String name) {
         String res = helper.get("http://enterprise-systems.appspot.com/person/find.name", "name", name);
@@ -153,21 +201,6 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
         return dummy.key;
     }
 
-    // BANK
-    
-    @Override
-    public String listBanks() {
-        String res = helper.get("http://enterprise-systems.appspot.com/bank/list");
-        
-        return res;
-        }
-
-    @Override
-    public String findBankByKey(String key) {
-        String res = helper.get("http://enterprise-systems.appspot.com/bank/find.key", "key", key);
-        
-        return res;
-    }
 
     @Override
     public String findBankByName(String name) {

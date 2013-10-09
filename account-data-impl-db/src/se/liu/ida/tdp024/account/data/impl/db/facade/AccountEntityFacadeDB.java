@@ -6,6 +6,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
+import se.liu.ida.tdp024.account.data.api.exception.EntityInputParameterException;
 import se.liu.ida.tdp024.account.data.api.exception.EntityServiceConfigurationException;
 import se.liu.ida.tdp024.account.data.api.exception.EntityNotFoundException;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
@@ -137,7 +138,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             }
             return account;
 
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             
             throw new EntityServiceConfigurationException("Database broken :(");    
         } finally {
@@ -148,12 +150,14 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public boolean modifyAccount(int id, int amount) 
+    public boolean modifyAccount(int id, int amount, String mod) 
         throws
             EntityServiceConfigurationException,
-            EntityNotFoundException {
+            EntityNotFoundException,
+            EntityInputParameterException {
         
         EntityManager em = EMF.getEntityManager();
+        Boolean status = false;
         
         try {
             em.getTransaction().begin();
@@ -164,8 +168,18 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
                 throw new EntityNotFoundException("Could not find account with id: "+id);
             }
             
-            Boolean status = account.changeHoldings(amount);
-
+            if(amount < 0) {
+                throw new EntityInputParameterException("Amount cannot be a negative number.");
+            }
+            
+            if(mod.equals("C")) {
+                status = account.changeHoldings(amount);
+            } else {
+                status = account.changeHoldings((amount - (amount*2)));
+            }
+            if(!status) {
+                throw new EntityInputParameterException("Failed to modify account holdings.");
+            }
             em.merge(account);
 
             em.getTransaction().commit();

@@ -6,3 +6,4 @@
 *.jar
 *.properties
 *.xml
+/account-xfinal-test/build/
