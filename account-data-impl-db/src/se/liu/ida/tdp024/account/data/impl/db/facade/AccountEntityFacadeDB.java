@@ -6,6 +6,8 @@ import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import se.liu.ida.tdp024.account.data.api.entity.Account;
 import se.liu.ida.tdp024.account.data.api.entity.Transaction;
+import se.liu.ida.tdp024.account.data.api.exception.EntityServiceConfigurationException;
+import se.liu.ida.tdp024.account.data.api.exception.EntityNotFoundException;
 import se.liu.ida.tdp024.account.data.api.facade.AccountEntityFacade;
 import se.liu.ida.tdp024.account.data.impl.db.entity.AccountDB;
 import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
@@ -13,7 +15,10 @@ import se.liu.ida.tdp024.account.data.impl.db.util.EMF;
 public class AccountEntityFacadeDB implements AccountEntityFacade {
 
     @Override
-    public int createAccount(String accountType, String name, String bank) {
+    public int createAccount(String accountType, String name, String bank) 
+        throws
+            EntityServiceConfigurationException {
+        
         EntityManager em = EMF.getEntityManager();
 
         try {
@@ -29,20 +34,24 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             return account.getId();
 
         } catch (Exception e) {
-
-            return -1;
-
-        } finally {
-
+            
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
+            
+            throw new EntityServiceConfigurationException("Database broken :(");
+
+        } finally {
+
             em.close();
         }
     }
 
     @Override
-    public boolean insertTransaction(Transaction transaction) {
+    public boolean insertTransaction(Transaction transaction) 
+        throws
+            EntityServiceConfigurationException {
+        
         EntityManager em = EMF.getEntityManager();
         
         try {
@@ -56,21 +65,24 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             return true;
 
         } catch (Exception e) {
-
-            return false;
-
-        } finally {
-
+            
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
+            
+            throw new EntityServiceConfigurationException("Database broken :(");
+
+        } finally {
 
             em.close();
         }
     }
 
     @Override
-    public List<Account> listAccounts(String name) {
+    public List<Account> listAccounts(String name) 
+        throws
+            EntityServiceConfigurationException {
+        
         EntityManager em = EMF.getEntityManager();
 
         try {
@@ -81,7 +93,7 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
 
         } catch (Exception e) {
 
-            return null;
+            throw new EntityServiceConfigurationException("Database broken :(");
 
         } finally {
             em.close();
@@ -89,7 +101,10 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public List<Transaction> listTransactions(Account account) {
+    public List<Transaction> listTransactions(Account account) 
+        throws
+            EntityServiceConfigurationException {
+        
         EntityManager em = EMF.getEntityManager();
 
         try {
@@ -99,7 +114,8 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             return query.getResultList();
 
         } catch (Exception e) {
-            return null;
+            
+            throw new EntityServiceConfigurationException("Database broken :(");
 
         } finally {
             em.close();
@@ -107,29 +123,46 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
     }
 
     @Override
-    public Account findAccount(int id) {
+    public Account findAccount(int id) 
+        throws
+            EntityServiceConfigurationException,
+            EntityNotFoundException {
+        
         EntityManager em = EMF.getEntityManager();
 
         try {
-            return em.find(AccountDB.class, id);
+            Account account = em.find(AccountDB.class, id);
+            if(account == null) {
+                throw new EntityNotFoundException("No account with id: "+id);
+            }
+            return account;
 
         } catch (Exception e) {
-            return null;
-
+            
+            throw new EntityServiceConfigurationException("Database broken :(");    
         } finally {
+            
             em.close();
         }
 
     }
 
     @Override
-    public boolean modifyAccount(int id, int amount) {
+    public boolean modifyAccount(int id, int amount) 
+        throws
+            EntityServiceConfigurationException,
+            EntityNotFoundException {
+        
         EntityManager em = EMF.getEntityManager();
         
         try {
             em.getTransaction().begin();
 
             Account account = em.find(AccountDB.class, id, LockModeType.PESSIMISTIC_WRITE);
+            
+            if(account == null) {
+                throw new EntityNotFoundException("Could not find account with id: "+id);
+            }
             
             Boolean status = account.changeHoldings(amount);
 
@@ -140,14 +173,14 @@ public class AccountEntityFacadeDB implements AccountEntityFacade {
             return status;
 
         } catch (Exception e) {
-
-            return false;
-
-        } finally {
-
-            if (em.getTransaction().isActive()) {
+            
+             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
+             
+            throw new EntityServiceConfigurationException("Database broken :(");
+
+        } finally {
 
             em.close();
         }
