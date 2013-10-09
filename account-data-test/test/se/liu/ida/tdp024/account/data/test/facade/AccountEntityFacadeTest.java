@@ -44,6 +44,7 @@ public class AccountEntityFacadeTest {
         Assert.assertEquals(accountType1, account.getAccountType());
         Assert.assertEquals(personKey, account.getPersonKey());
         Assert.assertEquals(bankKey, account.getBankKey());
+        
     }
     
     @Test
@@ -64,6 +65,8 @@ public class AccountEntityFacadeTest {
         // Find the account again check if the amount now is 50
         account = accountEntityFacade.findAccount(id);
         Assert.assertEquals(50, account.getHoldings());
+
+        Assert.assertEquals(false, accountEntityFacade.modifyAccount(id, -100));
     }
     
     @Test

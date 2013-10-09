@@ -14,37 +14,38 @@ import se.liu.ida.tdp024.account.util.json.AccountJsonSerializerImpl;
 public class AccountLogicFacadeImpl implements AccountLogicFacade {
     
     private AccountEntityFacade accountEntityFacade;
+
     
     public AccountLogicFacadeImpl(AccountEntityFacade accountEntityFacade) {
         this.accountEntityFacade = accountEntityFacade;
     }
     
+   private static final String FAILED = "FAILED";
+   private static final String NULL = "null";
    // *** DATA INTERACTION FUNCTIONS ***
     
     private AccountJsonSerializer json = new AccountJsonSerializerImpl();
     
     @Override
     public String createAccount(String type, String name, String bank) {
+
             if(type == null) {
-                return "FAILED";
+                return FAILED;
             }
             
             if(!type.equals("CHECK") && !type.equals("SAVINGS")) {
-                return "FAILED";
+                return FAILED;
             }
         
             String nameKey = findPersonByName(name);
-            if(nameKey.equals("null")) {
-                return "FAILED";
-            }
-            
             String bankKey = findBankByName(bank);
-            if(bankKey.equals("null")) {
-                return "FAILED";
+            
+            if(nameKey.equals(NULL) || bankKey.equals(NULL)) {
+                return FAILED;
             }
             
             if(accountEntityFacade.createAccount(type, nameKey, bankKey) < 0) {
-                return "FAILED";
+                return FAILED;
             }
             
             
@@ -54,7 +55,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     @Override
     public String creditAccount(int id, int amount) {
         if(findAccount(id) == null) {
-            return "FAILED";
+            return FAILED;
         }
         Transaction transaction = new TransactionDB("CREDIT", amount);
         if(amount > 0) {
@@ -68,13 +69,13 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             return "OK";
         }
         
-        return "FAILED";
+        return FAILED;
     }
 
     @Override
     public String debitAccount(int id, int amount) {
         if(findAccount(id) == null) {
-            return "FAILED";
+            return FAILED;
         }
         Transaction transaction = new TransactionDB("DEBIT", amount);
         if(amount > 0) {
@@ -89,12 +90,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
             return transaction.getStatus();
         }
         
-        return "FAILED";
-    }
-
-    @Override
-    public Boolean createTransaction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return FAILED;
     }
 
     @Override
@@ -105,7 +101,7 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     @Override
     public String listAccounts(String name) {
         String nameKey = findPersonByName(name);
-        if(nameKey.equals("null")) {
+        if(nameKey.equals(NULL)) {
             return "[]";
         }
         List<Account> list = accountEntityFacade.listAccounts(nameKey);
@@ -131,23 +127,13 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
     }
     
     // PERSON
-    
-    @Override
-    public String listPersons() {
-        String res = helper.get("http://enterprise-systems.appspot.com/person/list");
-        return res;
-    }
-
-    @Override
-    public String findPersonByKey(String key) {
-        String res = helper.get("http://enterprise-systems.appspot.com/person/find.key", "key", key);
-        
-        return res;
-    }
 
     @Override
     public String findPersonByName(String name) {
         String res = helper.get("http://enterprise-systems.appspot.com/person/find.name", "name", name);
+        if(res.equals(NULL)) {
+            return NULL;
+        }
         Dummy dummy = json.fromJson(res, Dummy.class);
        
         return dummy.key;
@@ -155,24 +141,13 @@ public class AccountLogicFacadeImpl implements AccountLogicFacade {
 
     // BANK
     
-    @Override
-    public String listBanks() {
-        String res = helper.get("http://enterprise-systems.appspot.com/bank/list");
-        
-        return res;
-        }
-
-    @Override
-    public String findBankByKey(String key) {
-        String res = helper.get("http://enterprise-systems.appspot.com/bank/find.key", "key", key);
-        
-        return res;
-    }
 
     @Override
     public String findBankByName(String name) {
-        String res = helper.get("http://enterprise-systems.appspot.com/bank/find.name", "name", name);
-        
+       String res = helper.get("http://enterprise-systems.appspot.com/bank/find.name", "name", name);
+       if(res.equals(NULL)) {
+            return NULL;
+       } 
        Dummy dummy = json.fromJson(res, Dummy.class);
        
        return dummy.key;

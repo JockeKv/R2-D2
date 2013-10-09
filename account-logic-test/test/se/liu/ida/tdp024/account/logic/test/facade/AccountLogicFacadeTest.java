@@ -18,23 +18,48 @@ public class AccountLogicFacadeTest {
     
     @After
     public void tearDown() {
-        //storageFacade.emptyStorage();
+        storageFacade.emptyStorage();
     }
     
     
+    String accountType1 = "CHECK";
+    String accountType2 = "DEBIT";
+    String personKey = "Joakim Kvarnkvist";
+    String bankKey = "No Savings Bank";
+    int creditamount = 100;
+    int debitamount = -50;
+    String type = "CREDIT";
     
     @Test
     public void testCreate() {
-        String res = accountLogicFacade.createAccount("CHECK", "Marcus Bendtsen", "SWEDBANK");
-        System.out.println(res);
-        
-        res = accountLogicFacade.creditAccount(1, 100);
-        System.out.println(res);
-        
-        res = accountLogicFacade.listTransactions(1);
-        System.out.println(res);
 
-
+        Assert.assertEquals("OK", accountLogicFacade.createAccount("CHECK", "Marcus Bendtsen", "SWEDBANK"));
+        Assert.assertEquals("FAILED", accountLogicFacade.createAccount(null, "Marcus Bendtsen", "SWEDBANK"));
+        Assert.assertEquals("FAILED", accountLogicFacade.createAccount("CHECK", "Anders Ydremark", "SWEDBANK"));
+        Assert.assertEquals("FAILED", accountLogicFacade.createAccount("CHECK", "Marcus Bendtsen", "DERP BANK"));
+        Assert.assertEquals("FAILED", accountLogicFacade.createAccount("DOLLARS", "Marcus Bendtsen", "DERP BANK"));
         
+    }
+    
+    @Test
+    public void testDebitCreditAccount() {
+        
+        accountLogicFacade.createAccount("CHECK", "Marcus Bendtsen", "SWEDBANK");
+        Assert.assertEquals("OK", accountLogicFacade.creditAccount(1, 100));
+        Assert.assertEquals("OK", accountLogicFacade.debitAccount(1, 100));
+        Assert.assertEquals("FAILED", accountLogicFacade.debitAccount(1, 100));
+        Assert.assertEquals("FAILED", accountLogicFacade.creditAccount(57, 100));
+        Assert.assertEquals("FAILED", accountLogicFacade.debitAccount(54, 100));
+        
+    }
+    
+    @Test
+    public void testFindAccount() {
+        Assert.assertEquals(null, accountLogicFacade.findAccount(432));
+    }
+    
+    @Test
+    public void testListAccounts() {
+        Assert.assertEquals("[]", accountLogicFacade.listAccounts("Anders Ydremark"));
     }
 }
