@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Wed Oct 09 19:24:03 CEST 2013:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.1.2 - (1095077): instance a816c00e-0141-9e3f-2d4e-00000084aaf8 
+on database directory memory:Z:\Desktop\GitHub\R2-D2\dataPU_embedded  with class loader sun.misc.Launcher$AppClassLoader@1f6a7b9 
+Loaded from file:/Z:/Desktop/GitHub/R2-D2/lib/derby.jar
+java.vendor=Sun Microsystems Inc.
+java.runtime.version=1.6.0_29-b11
+user.dir=Z:\Desktop\GitHub\R2-D2
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
